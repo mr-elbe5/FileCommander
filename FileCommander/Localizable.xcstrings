@@ -92,13 +92,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "?"
+            "value" : "Daten"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "?"
+            "value" : "Data"
           }
         }
       }
@@ -320,6 +320,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deselect All"
+          }
+        }
+      }
+    },
+    "editCreationDate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstellungsdatum ändern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Creation Date"
           }
         }
       }
@@ -660,6 +677,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
+          }
+        }
+      }
+    },
+    "setToExifCreation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf EXIF Aufnahmedatum setzen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set to EXIF Creation Date"
+          }
+        }
+      }
+    },
+    "showExifData" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EXIF-Daten anzeigen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show EXIF Data"
           }
         }
       }

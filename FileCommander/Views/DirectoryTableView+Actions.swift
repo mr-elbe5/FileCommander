@@ -1,11 +1,11 @@
 /*
  File Commander
  Copyright (C) 2025 Michael Roennau
-
+ 
  This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
  This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 import AppKit
 
@@ -80,14 +80,35 @@ extension DirectoryTableView {
             let set = IndexSet(integer: row)
             selectRowIndexes(set, byExtendingSelection: false)
             directory?.selectSet(set)
-            if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row){
-                let menu = FileMenu(file: file)
-                menu.addItem(NSMenuItem(title: "open".localize(), action: #selector(openFile), keyEquivalent: "o"))
-                menu.addItem(NSMenuItem(title: "copy".localize(), action: #selector(copySelectedToOtherSide), keyEquivalent: "c"))
-                menu.addItem(NSMenuItem(title: "move".localize(), action: #selector(moveSelectedToOtherSide), keyEquivalent: "m"))
-                menu.addItem(NSMenuItem(title: "rename".localize(), action: #selector(openRename), keyEquivalent: "r"))
-                menu.addItem(NSMenuItem(title: "delete".localize(), action: #selector(deleteSelected), keyEquivalent: "d"))
-                NSMenu.popUpContextMenu(menu, with: with, for: cell)
+            switch column{
+            case 0, 1:
+                if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row){
+                    let menu = FileMenu(file: file)
+                    menu.addItem(NSMenuItem(title: "open".localize(), action: #selector(openFile), keyEquivalent: "o"))
+                    menu.addItem(NSMenuItem(title: "copy".localize(), action: #selector(copySelectedToOtherSide), keyEquivalent: "c"))
+                    menu.addItem(NSMenuItem(title: "move".localize(), action: #selector(moveSelectedToOtherSide), keyEquivalent: "m"))
+                    menu.addItem(NSMenuItem(title: "rename".localize(), action: #selector(openRename), keyEquivalent: "r"))
+                    menu.addItem(NSMenuItem(title: "delete".localize(), action: #selector(deleteSelected), keyEquivalent: "d"))
+                    NSMenu.popUpContextMenu(menu, with: with, for: cell)
+                }
+            case 2:
+                if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row), file.hasExifData{
+                    let menu = FileMenu(file: file)
+                    menu.addItem(NSMenuItem(title: "showExifData".localize(), action: #selector(showExifData), keyEquivalent: "e"))
+                    NSMenu.popUpContextMenu(menu, with: with, for: cell)
+                }
+            case 4:
+                if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row){
+                    Log.info("right click for creation")
+                    let menu = FileMenu(file: file)
+                    menu.addItem(NSMenuItem(title: "editCreationDate".localize(), action: #selector(editCreationDate), keyEquivalent: "d"))
+                    if file.hasExifData{
+                        menu.addItem(NSMenuItem(title: "setToExifDate".localize(), action: #selector(setToExifDate), keyEquivalent: "e"))
+                    }
+                    NSMenu.popUpContextMenu(menu, with: with, for: cell)
+                }
+            default:
+                break
             }
         }
     }
@@ -95,6 +116,24 @@ extension DirectoryTableView {
     @objc func openFile(_ sender: Any){
         if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu{
             Log.info("openFile: \(menu.file.fileName)")
+        }
+    }
+    
+    @objc func showExifData(_ sender: Any){
+        if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu{
+            Log.info("openExif: \(menu.file.fileName)")
+        }
+    }
+    
+    @objc func editCreationDate(_ sender: Any){
+        if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu{
+            Log.info("editCreationDate: \(menu.file.fileName)")
+        }
+    }
+    
+    @objc func setToExifDate(_ sender: Any){
+        if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu{
+            Log.info("setToExifDate: \(menu.file.fileName)")
         }
     }
     
@@ -240,7 +279,7 @@ extension DirectoryTableView {
             directoryFilesChanged()
         }
     }
-        
+    
     func selectNotMatchingItems() {
         if isOtherDirectoryTheSame{
             return

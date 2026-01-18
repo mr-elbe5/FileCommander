@@ -48,8 +48,8 @@ class TextCellView: NSTableCellView{
         self.identifier = identifier
         backgroundColor = .clear
         txtField.drawsBackground = false
-        //textField = txtField
-        addSubviewFilling(txtField, insets: .zero)
+        addSubviewWithAnchors(txtField, leading: leadingAnchor, trailing: trailingAnchor, insets: .zero)
+            .centerY(centerYAnchor)
     }
     
     required init(coder: NSCoder) {

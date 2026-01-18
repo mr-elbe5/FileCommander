@@ -32,6 +32,15 @@ extension Date{
         DateFormats.dateTimeFormatter.string(from: self)
     }
     
+    func dateOrTimeString() -> String{
+        if startOfDay() == Date().startOfDay(){
+            return timeString()
+        }
+        else{
+            return dateString()
+        }
+    }
+    
     func fileDate() -> String{
         DateFormats.fileDateFormatter.string(from: self)
     }

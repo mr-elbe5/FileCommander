@@ -58,15 +58,15 @@ class DirectoryTableView: NSTableView {
                 col.minWidth = 15
                 col.maxWidth = 30
             case "data":
-                col.minWidth = 10
-                col.maxWidth = 10
+                col.minWidth = 30
+                col.maxWidth = 60
             case "size":
                 col.minWidth = 30
                 col.maxWidth = 50
             case "created", "modified":
                 ascending = false
-                col.minWidth = 110
-                col.maxWidth = 110
+                col.minWidth = 60
+                col.maxWidth = 80
             default:
                 break
             }
@@ -121,7 +121,7 @@ class DirectoryTableView: NSTableView {
 extension DirectoryTableView: NSTableViewDelegate{
     
     func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        20
+        24
     }
     
     func tableView(_ tableView: NSTableView, rowViewForRow: Int) -> NSTableRowView?{
@@ -130,7 +130,7 @@ extension DirectoryTableView: NSTableViewDelegate{
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         if let col = tableColumn, let file = fileForRow(row){
-            if col.identifier.rawValue == "type" || col.identifier.rawValue == "data"{
+            if col.identifier.rawValue == "type"{
                 return getIconCell(tableView: tableView, file: file, row: row, col: col)
             }
             else{
@@ -154,17 +154,6 @@ extension DirectoryTableView: NSTableViewDelegate{
             switch col.identifier.rawValue {
             case "type":
                 icon = file.fileType?.image
-            case "data":
-                switch file.dataString{
-                case "EXIF":
-                    icon = NSImage(systemSymbolName: "camera.badge.ellipsis", accessibilityDescription: "EXIF")
-                case "GPS":
-                    icon = NSImage(systemSymbolName: "mappin.and.ellipse", accessibilityDescription: "GPS")
-                case "TXT":
-                    icon = NSImage(systemSymbolName: "text.document", accessibilityDescription: "TXT")
-                default:
-                    return nil
-                }
             default:
                 return nil
             }
@@ -199,7 +188,9 @@ extension DirectoryTableView: NSTableViewDelegate{
         else{
             switch col.identifier.rawValue {
             case "name":
-                cellText = "\(file.fileName)"
+                cellText = file.fileName
+            case "data":
+                cellText = file.dataString
             case "size":
                 cellText = file.sizeString
                 alignment = .right

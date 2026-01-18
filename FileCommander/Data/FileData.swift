@@ -26,7 +26,6 @@ class FileData: NSObject{
     var fileModificationDate: Date? = nil
     var fileType: FileType? = nil
     var isDirectory: Bool = false
-    var hasText: Bool = false
     var exifData: ImageExifData? = nil
     
     var isSelected = false
@@ -47,17 +46,19 @@ class FileData: NSObject{
         url.parentURL
     }
     
+    var hasExifData: Bool{
+        exifData != nil
+    }
+    
     var dataString: String{
         switch fileType{
         case .image:
             if let exifData = exifData{
                 if exifData.hasGPSData{
-                    return "GPS"
+                    return "EXIF+GPS"
                 }
                 return "EXIF"
             }
-        case .text:
-            return "TXT"
         default:
             return ""
         }
@@ -72,11 +73,11 @@ class FileData: NSObject{
     }
     
     var creationDateString: String{
-        fileCreationDate?.dateTimeString() ?? ""
+        fileCreationDate?.dateOrTimeString() ?? ""
     }
     
     var mofificationDateString: String{
-        fileModificationDate?.dateTimeString() ?? ""
+        fileModificationDate?.dateOrTimeString() ?? ""
     }
     
     init(url: URL, side: PanelSide){
@@ -88,10 +89,6 @@ class FileData: NSObject{
     
     func evaluateData(){
         switch fileType {
-        case .text:
-            if !hasText, let text = FileManager.default.readTextFile(url: url), text.count > 0{
-                hasText = true
-            }
         case .image:
             if self.exifData == nil, let exifData = ImageExifData.getExifData(from: url){
                 self.exifData = exifData
