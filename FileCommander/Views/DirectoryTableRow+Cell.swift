@@ -74,7 +74,6 @@ class ImageCellView: NSTableCellView{
         self.identifier = identifier
         backgroundColor = .clear
         imgView.backgroundColor = .clear
-        //imageView = imgView
         addSubviewFilling(imgView, insets: .zero)
     }
     

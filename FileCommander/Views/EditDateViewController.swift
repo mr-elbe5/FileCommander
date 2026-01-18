@@ -9,7 +9,7 @@
 
 import AppKit
 
-class EditFileNameViewController: ViewController, ModalResponder{
+class EditDateViewController: ViewController, ModalResponder{
     
     var responseCode: NSApplication.ModalResponse{
         get{
@@ -20,16 +20,16 @@ class EditFileNameViewController: ViewController, ModalResponder{
         }
     }
     
-    var fileName: String{
+    var date: Date{
         get{
-            contentView.textField.stringValue
+            contentView.datePicker.dateValue
         }
         set{
-            contentView.textField.stringValue = newValue
+            contentView.datePicker.dateValue = newValue
         }
     }
     
-    var contentView = EditFileNameView()
+    var contentView = EditDateView()
     
     override func loadView() {
         super.loadView()
@@ -39,19 +39,20 @@ class EditFileNameViewController: ViewController, ModalResponder{
     
 }
 
-class EditFileNameView: NSView{
+class EditDateView: NSView{
     
-    var textField = NSTextField(string: "")
+    var datePicker = NSDatePicker()
     var responseCode: NSApplication.ModalResponse = .cancel
     
     func setup() {
-        addSubviewBelow(textField)
+        datePicker.datePickerStyle = .textFieldAndStepper
+        addSubviewBelow(datePicker)
         
         let okButton = NSButton(title: "ok".localize(), target: self, action: #selector(save))
-        addSubviewWithAnchors(okButton, top: textField.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor)
+        addSubviewWithAnchors(okButton, top: datePicker.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor)
         
         let cancelButton = NSButton(title: "cancel".localize(), target: self, action: #selector(cancel))
-        addSubviewWithAnchors(cancelButton, top: textField.bottomAnchor, trailing: trailingAnchor)
+        addSubviewWithAnchors(cancelButton, top: datePicker.bottomAnchor, trailing: trailingAnchor)
             .centerY(okButton.centerYAnchor)
     }
     

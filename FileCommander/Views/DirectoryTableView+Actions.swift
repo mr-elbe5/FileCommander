@@ -28,13 +28,7 @@ extension DirectoryTableView {
                 }
             }
             else{
-                let configuration = NSWorkspace.OpenConfiguration()
-                configuration.promptsUserIfNeeded = true
-                NSWorkspace.shared.open(file.url, configuration: configuration){ app, error in
-                    if let error = error {
-                        Log.error(error: error)
-                    }
-                }
+                openFile(file)
             }
         }
     }
@@ -84,7 +78,7 @@ extension DirectoryTableView {
             case 0, 1:
                 if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row){
                     let menu = FileMenu(file: file)
-                    menu.addItem(NSMenuItem(title: "open".localize(), action: #selector(openFile), keyEquivalent: "o"))
+                    menu.addItem(NSMenuItem(title: "open".localize(), action: #selector(openFileAtMenu), keyEquivalent: "o"))
                     menu.addItem(NSMenuItem(title: "copy".localize(), action: #selector(copySelectedToOtherSide), keyEquivalent: "c"))
                     menu.addItem(NSMenuItem(title: "move".localize(), action: #selector(moveSelectedToOtherSide), keyEquivalent: "m"))
                     menu.addItem(NSMenuItem(title: "rename".localize(), action: #selector(openRename), keyEquivalent: "r"))
@@ -93,13 +87,12 @@ extension DirectoryTableView {
                 }
             case 2:
                 if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row), file.hasExifData{
-                    let menu = FileMenu(file: file)
-                    menu.addItem(NSMenuItem(title: "showExifData".localize(), action: #selector(showExifData), keyEquivalent: "e"))
-                    NSMenu.popUpContextMenu(menu, with: with, for: cell)
+                    let controller = ExifDataViewController(file)
+                    controller.file = file
+                    controller.popover.show(relativeTo: cell.bounds, of: cell, preferredEdge: .maxY)
                 }
             case 4:
                 if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row){
-                    Log.info("right click for creation")
                     let menu = FileMenu(file: file)
                     menu.addItem(NSMenuItem(title: "editCreationDate".localize(), action: #selector(editCreationDate), keyEquivalent: "d"))
                     if file.hasExifData{
@@ -113,15 +106,9 @@ extension DirectoryTableView {
         }
     }
     
-    @objc func openFile(_ sender: Any){
+    @objc func openFileAtMenu(_ sender: Any){
         if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu{
-            Log.info("openFile: \(menu.file.fileName)")
-        }
-    }
-    
-    @objc func showExifData(_ sender: Any){
-        if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu{
-            Log.info("openExif: \(menu.file.fileName)")
+            openFile(menu.file)
         }
     }
     
@@ -339,6 +326,16 @@ extension DirectoryTableView {
                 }
             }
             reloadData()
+        }
+    }
+    
+    func openFile(_ file:FileData){
+        let configuration = NSWorkspace.OpenConfiguration()
+        configuration.promptsUserIfNeeded = true
+        NSWorkspace.shared.open(file.url, configuration: configuration){ app, error in
+            if let error = error {
+                Log.error(error: error)
+            }
         }
     }
     
