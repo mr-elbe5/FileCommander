@@ -36,8 +36,7 @@ class PanelContext: Codable{
     }
     
     var side: PanelSide
-    var currentDirectory: DirectoryData? = nil
-    var currentURL: URL? = nil
+    var currentDirectory: DirectoryData
     var showHidden: Bool = false
     var confirmDelete: Bool = true
     var sortType: SortType = .initial
@@ -48,16 +47,15 @@ class PanelContext: Codable{
     
     init(side: PanelSide){
         self.side = side
+        currentDirectory = DirectoryData(url: FileManager.homeURL, side: side)
     }
     
     required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let i = try values.decodeIfPresent(Int.self, forKey: .side) ?? PanelSide.left.rawValue
         side = PanelSide(rawValue: i) ?? .left
-        currentURL = try values.decodeIfPresent(URL.self, forKey: .currentURL) ?? FileManager.homeURL
-        if let url = currentURL{
-            currentDirectory = DirectoryData(url: url, side: side)
-        }
+        let url = try values.decodeIfPresent(URL.self, forKey: .currentURL) ?? FileManager.homeURL
+        currentDirectory = DirectoryData(url: url, side: side)
         showHidden = try values.decodeIfPresent(Bool.self, forKey: .showHidden) ?? false
         confirmDelete = try values.decodeIfPresent(Bool.self, forKey: .confirmDelete) ?? true
         compareBySize = try values.decodeIfPresent(Bool.self, forKey: .compareBySize) ?? false
@@ -68,7 +66,7 @@ class PanelContext: Codable{
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(side.rawValue, forKey: .side)
-        try container.encode(currentURL, forKey: .currentURL)
+        try container.encode(currentDirectory.url, forKey: .currentURL)
         try container.encode(showHidden, forKey: .showHidden)
         try container.encode(confirmDelete, forKey: .confirmDelete)
         try container.encode(compareBySize, forKey: .compareBySize)
@@ -77,16 +75,9 @@ class PanelContext: Codable{
     }
     
     func setCurrentDirectory(url: URL) -> DirectoryData{
-        currentURL = url
-        setupCurrentDirectory()
-        return currentDirectory!
-    }
-    
-    func setupCurrentDirectory(){
-        if let url = currentURL{
-            currentDirectory = DirectoryData(url: url, side: side)
-            currentDirectory!.scan()
-        }
+        currentDirectory = DirectoryData(url: url, side: side)
+        currentDirectory.scan()
+        return currentDirectory
     }
      
 }

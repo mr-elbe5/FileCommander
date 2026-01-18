@@ -38,7 +38,7 @@ class MainWindowController: NSWindowController {
     
     init(){
         let window = NSWindow(contentRect: MainWindowController.defaultRect, styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: true)
-        window.title = "File Cmd"
+        window.title = "File Commander"
         window.minSize = CGSize(width: 800, height: 600)
         super.init(window: window)
         helpButton = ToolbarButton(title: "help".localize(), icon: "questionmark.circle",target: self,action: #selector(openHelp))
