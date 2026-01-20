@@ -18,6 +18,23 @@
         }
       }
     },
+    "altitude" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Höhe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altitude"
+          }
+        }
+      }
+    },
     "calculateFolderSize" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -48,6 +65,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Calculate Folder Sizes"
+          }
+        }
+      }
+    },
+    "camera" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera"
           }
         }
       }
@@ -99,6 +133,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data"
+          }
+        }
+      }
+    },
+    "col_exifdate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exif-Datum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exif Date"
+          }
+        }
+      }
+    },
+    "col_gps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPS"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPS"
           }
         }
       }
@@ -290,6 +358,23 @@
         }
       }
     },
+    "creationDate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstellungsdatum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creation Date"
+          }
+        }
+      }
+    },
     "delete" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -456,6 +541,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Files and folder can be selected by left clicking on it, optionally using the command or shift key.\nOn right mouse click, a single item is selected combined with opening a context menu.\nOn comparing, matching or differing items are selected."
+          }
+        }
+      }
+    },
+    "latitude" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geogr. Breite"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latitude"
+          }
+        }
+      }
+    },
+    "longitude" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geogr. Länge"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longitude"
           }
         }
       }
@@ -728,6 +847,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show hidden Files"
+          }
+        }
+      }
+    },
+    "size" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Size"
           }
         }
       }

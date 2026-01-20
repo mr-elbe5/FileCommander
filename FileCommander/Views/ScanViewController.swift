@@ -25,7 +25,6 @@ class ScanViewController: PanelMenuViewController {
 
 protocol ScanViewDelegate{
     func refresh()
-    func evaluateFiles()
     func calculateFolderSizes()
 }
 
@@ -42,22 +41,14 @@ class ScanView: PanelMenuView{
         let refreshButton = NSButton(title: "rescan".localize(), target: self, action: #selector(refresh))
         contentView.addSubviewBelow(refreshButton, insets: .defaultInsets)
         
-        let evaluateFilesButton = NSButton(title: "evaluateFiles".localize(), target: self, action: #selector(evaluateFiles))
-        contentView.addSubviewBelow(evaluateFilesButton, upperView: refreshButton, insets: .defaultInsets)
-        
         let calculateFolderSizesButton = NSButton(title: "calculateFolderSizes".localize(), target: self, action: #selector(calculateFolderSizes))
-        contentView.addSubviewBelow(calculateFolderSizesButton, upperView: evaluateFilesButton, insets: .defaultInsets)
+        contentView.addSubviewBelow(calculateFolderSizesButton, upperView: refreshButton, insets: .defaultInsets)
         
             .connectToBottom(of: contentView)
     }
     
     @objc func refresh() {
         delegate?.refresh()
-        close()
-    }
-    
-    @objc func evaluateFiles(){
-        delegate?.evaluateFiles()
         close()
     }
     

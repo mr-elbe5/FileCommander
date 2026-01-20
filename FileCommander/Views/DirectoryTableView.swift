@@ -16,7 +16,7 @@ protocol PanelActionDelegate{
 
 class DirectoryTableView: NSTableView {
     
-    let columnNames = ["type", "name", "data", "size", "created", "modified"]
+    let columnNames = ["type", "name", "size", "gps", "exifdate", "created", "modified"]
     
     var directory: DirectoryData? = nil
     
@@ -47,6 +47,7 @@ class DirectoryTableView: NSTableView {
         super.init(frame: .zero)
         delegate = self
         dataSource = self
+        Log.info("\(context.showExifData)")
         for cn in columnNames {
             let cid = NSUserInterfaceItemIdentifier(cn)
             columnIdentifiers.append(cid)
@@ -57,13 +58,13 @@ class DirectoryTableView: NSTableView {
             case "type":
                 col.minWidth = 15
                 col.maxWidth = 30
-            case "data":
-                col.minWidth = 30
-                col.maxWidth = 60
             case "size":
                 col.minWidth = 30
                 col.maxWidth = 50
-            case "created", "modified":
+            case "gps":
+                col.minWidth = 20
+                col.maxWidth = 30
+            case "exifdate", "created", "modified":
                 ascending = false
                 col.minWidth = 60
                 col.maxWidth = 80
@@ -89,6 +90,11 @@ class DirectoryTableView: NSTableView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func viewDidAppear() {
+        tableColumn(withIdentifier: NSUserInterfaceItemIdentifier("gps"))?.isHidden = !context.showExifData
+        tableColumn(withIdentifier: NSUserInterfaceItemIdentifier("exifdate"))?.isHidden = !context.showExifData
+    }
+    
     func setDirectory(_ dir: DirectoryData){
         directory = dir
         actionDelegate?.directoryChanged()
@@ -99,6 +105,10 @@ class DirectoryTableView: NSTableView {
         reloadData()
         guard let directory = directory else {return}
         selectRowIndexes(directory.selectedIndexes, byExtendingSelection: false)
+    }
+    
+    func showColumn(_ identifier: String, _ show: Bool){
+        tableColumn(withIdentifier: NSUserInterfaceItemIdentifier(identifier))?.isHidden = !show
     }
     
     func fileForRow(_ row: Int) -> FileData?{
@@ -189,11 +199,17 @@ extension DirectoryTableView: NSTableViewDelegate{
             switch col.identifier.rawValue {
             case "name":
                 cellText = file.fileName
-            case "data":
-                cellText = file.dataString
             case "size":
                 cellText = file.sizeString
                 alignment = .right
+            case "gps":
+                if let image = file as? ImageData, image.assertExifData(), image.hasGPSData{
+                    cellText = "GPS"
+                }
+            case "exifdate":
+                if let image = file as? ImageData, image.assertExifData(){
+                    cellText = image.exifCreationDateString
+                }
             case "created":
                 cellText = file.creationDateString
                 alignment = .right

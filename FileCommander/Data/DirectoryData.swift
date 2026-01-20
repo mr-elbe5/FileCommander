@@ -18,10 +18,6 @@ class DirectoryData: FileData {
         parentDirectory == nil
     }
     
-    override var dataString: String{
-        return ""
-    }
-    
     override var sizeString: String{
         if size == 0{
             return ""
@@ -63,7 +59,6 @@ class DirectoryData: FileData {
         files.removeAll()
         if let parentURL = parentURL{
             parentDirectory = DirectoryData(url: parentURL, side: side)
-            parentDirectory!.isDirectory = true
             parentDirectory!.fileType = .directory
             parentDirectory!.fileName = ".."
         }
@@ -93,11 +88,16 @@ class DirectoryData: FileData {
                         //print("found directory \(file.url.lastPathComponent)")
                     }
                     else{
-                        file = FileData(url: childURL, side: side)
-                        file.fileType = FileType.fromPathExtension(childURL.pathExtension)
+                        let fileType = FileType.fromPathExtension(childURL.pathExtension)
+                        if fileType == .image{
+                            file = ImageData(url: childURL, side: side)
+                        }
+                        else{
+                            file = FileData(url: childURL, side: side)
+                        }
+                        file.fileType = fileType
                         //print("found file \(file.url.lastPathComponent)")
                     }
-                    file.isDirectory = resourceValues.isDirectory ?? false
                     file.size = resourceValues.fileSize ?? 0
                     file.isHidden = resourceValues.isHidden ?? false
                     file.fileCreationDate = resourceValues.creationDate

@@ -38,9 +38,11 @@ class MainViewController: ViewController {
     
     override func viewDidAppear() {
         super.viewDidAppear()
+        panel(.left).viewDidAppear()
         var dir = AppData.shared.context(.left).currentDirectory
         dir.scan()
         setDirectory(dir, side: .left)
+        panel(.right).viewDidAppear()
         dir = AppData.shared.context(.right).currentDirectory
         dir.scan()
         setDirectory(dir, side: .right)

@@ -25,8 +25,6 @@ class FileData: NSObject{
     var fileCreationDate: Date? = nil
     var fileModificationDate: Date? = nil
     var fileType: FileType? = nil
-    var isDirectory: Bool = false
-    var exifData: ImageExifData? = nil
     
     var isSelected = false
     
@@ -46,23 +44,12 @@ class FileData: NSObject{
         url.parentURL
     }
     
-    var hasExifData: Bool{
-        exifData != nil
+    var isDirectory: Bool{
+        fileType == .directory
     }
     
-    var dataString: String{
-        switch fileType{
-        case .image:
-            if let exifData = exifData{
-                if exifData.hasGPSData{
-                    return "EXIF+GPS"
-                }
-                return "EXIF"
-            }
-        default:
-            return ""
-        }
-        return ""
+    var isImage: Bool{
+        fileType == .image
     }
     
     var sizeString: String{
@@ -85,17 +72,6 @@ class FileData: NSObject{
         self.side = side
         self.fileName = url.lastPathComponent
         super.init()
-    }
-    
-    func evaluateData(){
-        switch fileType {
-        case .image:
-            if self.exifData == nil, let exifData = ImageExifData.getExifData(from: url){
-                self.exifData = exifData
-            }
-        default:
-            break
-        }
     }
     
 }

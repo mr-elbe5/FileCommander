@@ -11,13 +11,13 @@ import AppKit
 
 class ExifDataViewController: PopoverViewController {
     
-    var file: FileData
+    var file: ImageData
     
     var contentView: ExifDataView{
         view as! ExifDataView
     }
     
-    init(_ file: FileData){
+    init(_ file: ImageData){
         self.file = file
         super.init()
     }
@@ -36,9 +36,9 @@ class ExifDataViewController: PopoverViewController {
 
 class ExifDataView: PopoverView{
     
-    var file: FileData!
+    var file: ImageData!
     
-    func setupView(_ file: FileData) {
+    func setupView(_ file: ImageData) {
         self.file = file
         super.setupView(title: file.fileName)
         if let exifData = file.exifData{
@@ -57,7 +57,7 @@ class ExifDataView: PopoverView{
                 label = NSTextField(labelWithString: "\("latitude".localize()): \(exifData.exifLatitude)")
                 contentView.addSubviewBelow(label, upperView: lastView)
                 lastView = label
-                label = NSTextField(labelWithString: "\("longtude".localize()): \(exifData.exifLongitude)")
+                label = NSTextField(labelWithString: "\("longitude".localize()): \(exifData.exifLongitude)")
                 contentView.addSubviewBelow(label, upperView: lastView)
                 lastView = label
             }

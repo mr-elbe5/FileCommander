@@ -25,11 +25,13 @@ class SettingsViewController: PanelMenuViewController {
 
 protocol SettingsViewDelegate{
     func showHiddenChanged()
+    func showExifDataChanged()
 }
 
 class SettingsView: PanelMenuView{
     
     var showHiddenButton: NSButton!
+    var showExifDataButton: NSButton!
     var confirmDeleteButton: NSButton!
     
     var delegate: SettingsViewDelegate? = nil
@@ -41,9 +43,13 @@ class SettingsView: PanelMenuView{
         showHiddenButton.state = AppData.shared.context(side).showHidden ? .on : .off
         contentView.addSubviewBelow(showHiddenButton)
         
+        showExifDataButton = NSButton(checkboxWithTitle: "showExifData".localize(), target: self, action: #selector(toggleExifData))
+        showExifDataButton.state = AppData.shared.context(side).showExifData ? .on : .off
+        contentView.addSubviewBelow(showExifDataButton, upperView: showHiddenButton)
+        
         confirmDeleteButton = NSButton(checkboxWithTitle: "confirmDelete".localize(), target: self, action: #selector(toggleConfirmDelete))
         confirmDeleteButton.state = AppData.shared.context(side).confirmDelete ? .on : .off
-        contentView.addSubviewBelow(confirmDeleteButton, upperView: showHiddenButton)
+        contentView.addSubviewBelow(confirmDeleteButton, upperView: showExifDataButton)
         
             .connectToBottom(of: contentView)
     }
@@ -52,6 +58,12 @@ class SettingsView: PanelMenuView{
         AppData.shared.context(side).showHidden = showHiddenButton.state == .on
         AppData.shared.save()
         delegate?.showHiddenChanged()
+    }
+    
+    @objc func toggleExifData(){
+        AppData.shared.context(side).showExifData = showExifDataButton.state == .on
+        AppData.shared.save()
+        delegate?.showExifDataChanged()
     }
     
     @objc func toggleConfirmDelete(){

@@ -62,7 +62,7 @@ class DirectoryPanel: NSView {
         actionButton = NSButton(image: NSImage(systemSymbolName: "filemenu.and.selection", accessibilityDescription: nil)!, target: self, action: #selector(openAction))
         actionButton.toolTip = "action".localize()
         buttonView.addSubviewToRight(actionButton, leftView: selectButton, insets: .defaultInsets)
-        scanButton = NSButton(image: NSImage(systemSymbolName: "questionmark.folder", accessibilityDescription: nil)!, target: self, action: #selector(openScan))
+        scanButton = NSButton(image: NSImage(systemSymbolName: "arrow.clockwise", accessibilityDescription: nil)!, target: self, action: #selector(openScan))
         scanButton.toolTip = "scan".localize()
         buttonView.addSubviewToRight(scanButton, leftView: actionButton, insets: .defaultInsets)
         settingsButton = NSButton(image: NSImage(systemSymbolName: "gearshape", accessibilityDescription: nil)!, target: self, action: #selector(openSettings))
@@ -77,6 +77,10 @@ class DirectoryPanel: NSView {
         addSubviewBelow(scrollView, upperView: menu, insets: .zero)
             .connectToBottom(of: self)
         tableView.actionDelegate = self
+    }
+    
+    func viewDidAppear() {
+        tableView.viewDidAppear()
     }
     
     func activate(_ active: Bool){
@@ -137,6 +141,12 @@ extension DirectoryPanel: SettingsViewDelegate{
             tableView.reloadData()
         }
     }
+    
+    func showExifDataChanged() {
+        tableView.showColumn("gps", context.showExifData)
+        tableView.showColumn("exifdate", context.showExifData)
+        tableView.reloadData()
+    }
 
 }
 
@@ -181,10 +191,6 @@ extension DirectoryPanel: ScanViewDelegate{
     @objc func refresh() {
         updateDirectory()
         tableView.reloadData()
-    }
-    
-    func evaluateFiles() {
-        tableView.evaluateFiles()
     }
     
     func calculateFolderSizes() {

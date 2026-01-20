@@ -85,18 +85,18 @@ extension DirectoryTableView {
                     menu.addItem(NSMenuItem(title: "delete".localize(), action: #selector(deleteSelected), keyEquivalent: "d"))
                     NSMenu.popUpContextMenu(menu, with: with, for: cell)
                 }
-            case 2:
-                if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row), file.hasExifData{
+            case 3, 4:
+                if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row) as? ImageData, file.hasExifData{
                     let controller = ExifDataViewController(file)
                     controller.file = file
                     controller.popover.show(relativeTo: cell.bounds, of: cell, preferredEdge: .maxY)
                 }
-            case 4:
+            case 5:
                 if let cell = view(atColumn: column, row: row, makeIfNecessary: false), let file = fileForRow(row){
                     let menu = FileMenu(file: file)
                     menu.addItem(NSMenuItem(title: "editCreationDate".localize(), action: #selector(editCreationDate), keyEquivalent: "d"))
-                    if file.hasExifData{
-                        menu.addItem(NSMenuItem(title: "setToExifDate".localize(), action: #selector(setToExifDate), keyEquivalent: "e"))
+                    if let image = file as? ImageData, image.hasExifData{
+                        menu.addItem(NSMenuItem(title: "setToExifCreation".localize(), action: #selector(setToExifDate), keyEquivalent: "e"))
                     }
                     NSMenu.popUpContextMenu(menu, with: with, for: cell)
                 }
@@ -114,13 +114,15 @@ extension DirectoryTableView {
     
     @objc func editCreationDate(_ sender: Any){
         if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu{
-            Log.info("editCreationDate: \(menu.file.fileName)")
+            Log.info("editCreationCreation: \(menu.file.fileName)")
         }
     }
     
     @objc func setToExifDate(_ sender: Any){
-        if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu{
-            Log.info("setToExifDate: \(menu.file.fileName)")
+        if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu, let image = menu.file as? ImageData{
+            if image.setToExifDate(){
+                directoryFilesChanged()
+            }
         }
     }
     
@@ -307,15 +309,6 @@ extension DirectoryTableView {
             }
         }
         return true
-    }
-    
-    func evaluateFiles() {
-        if let directory = directory{
-            for file in directory.files {
-                file.evaluateData()
-            }
-            reloadData()
-        }
     }
     
     func calculateFolderSizes() {

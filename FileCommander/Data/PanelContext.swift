@@ -29,6 +29,7 @@ class PanelContext: Codable{
         case side
         case currentURL
         case showHidden
+        case showExifData
         case confirmDelete
         case compareBySize
         case compareByCreation
@@ -38,6 +39,7 @@ class PanelContext: Codable{
     var side: PanelSide
     var currentDirectory: DirectoryData
     var showHidden: Bool = false
+    var showExifData: Bool = false
     var confirmDelete: Bool = true
     var sortType: SortType = .initial
     var ascending: Bool = true
@@ -57,6 +59,7 @@ class PanelContext: Codable{
         let url = try values.decodeIfPresent(URL.self, forKey: .currentURL) ?? FileManager.homeURL
         currentDirectory = DirectoryData(url: url, side: side)
         showHidden = try values.decodeIfPresent(Bool.self, forKey: .showHidden) ?? false
+        showExifData = try values.decodeIfPresent(Bool.self, forKey: .showExifData) ?? false
         confirmDelete = try values.decodeIfPresent(Bool.self, forKey: .confirmDelete) ?? true
         compareBySize = try values.decodeIfPresent(Bool.self, forKey: .compareBySize) ?? false
         compareByCreation = try values.decodeIfPresent(Bool.self, forKey: .compareByCreation) ?? false
@@ -68,6 +71,7 @@ class PanelContext: Codable{
         try container.encodeIfPresent(side.rawValue, forKey: .side)
         try container.encode(currentDirectory.url, forKey: .currentURL)
         try container.encode(showHidden, forKey: .showHidden)
+        try container.encodeIfPresent(showExifData, forKey: .showExifData)
         try container.encode(confirmDelete, forKey: .confirmDelete)
         try container.encode(compareBySize, forKey: .compareBySize)
         try container.encode(compareByCreation, forKey: .compareByCreation)
