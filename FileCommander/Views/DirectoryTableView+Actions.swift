@@ -113,14 +113,24 @@ extension DirectoryTableView {
     }
     
     @objc func editCreationDate(_ sender: Any){
-        if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu{
-            Log.info("editCreationCreation: \(menu.file.fileName)")
+        if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu, let creationDate = menu.file.fileCreationDate{
+            if let directory = directory{
+                let controller = EditDateViewController()
+                controller.date = creationDate
+                if ModalWindow.run(title: "changeDate".localize(), viewController: controller, outerWindow: MainWindowController.instance.window!, minSize: CGSize(width: 300, height: 100)) == .OK{
+                    let date = controller.date
+                    Log.info("new date is \(date.dateTimeString())")
+                    menu.file.url.creation = date
+                    directory.scan()
+                    directoryFilesChanged()
+                }
+            }
         }
     }
     
     @objc func setToExifDate(_ sender: Any){
         if let menuItem = sender as? NSMenuItem, let menu = menuItem.menu as? FileMenu, let image = menu.file as? ImageData{
-            if image.setToExifDate(){
+            if image.setCreationDateToExifDate(){
                 directoryFilesChanged()
             }
         }

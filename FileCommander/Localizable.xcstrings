@@ -103,6 +103,40 @@
         }
       }
     },
+    "changeCreationDate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erstellungsdatum ändern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Creation Date"
+          }
+        }
+      }
+    },
+    "changeExifDate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EXIF-Datum ändern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change EXIF Date"
+          }
+        }
+      }
+    },
     "col_created" : {
       "extractionState" : "manual",
       "localizations" : {

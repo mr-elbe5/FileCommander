@@ -41,8 +41,41 @@ class ImageData: FileData{
         return exifData != nil
     }
     
-    func setToExifDate() -> Bool{
+    func setCreationDateToExifDate() -> Bool{
+        if let creationDate = exifData?.exifCreationDate{
+            fileCreationDate = creationDate
+            url.creation = fileCreationDate
+            return true
+        }
         return false
+    }
+    
+    func setExifToCreationDate() -> Bool{
+        if assertExifData(), let exifData = exifData{
+            exifData.exifCreationDate = fileCreationDate
+            return saveModifiedFile()
+        }
+        return false
+    }
+    
+    func saveModifiedFile() -> Bool{
+        var success = false
+        if let exifData = exifData, let oldData = FileManager.default.readFile(url: url){
+            let options = [kCGImageSourceShouldCache as String: kCFBooleanFalse]
+            if let imageSource = CGImageSourceCreateWithData(oldData as CFData, options as CFDictionary) {
+                let uti: CFString = CGImageSourceGetType(imageSource)!
+                let newData: NSMutableData = NSMutableData(data: oldData)
+                let destination: CGImageDestination = CGImageDestinationCreateWithData((newData as CFMutableData), uti, 1, nil)!
+                if let oldMetaData: NSDictionary = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, options as CFDictionary){
+                    let newMetaData: NSMutableDictionary = oldMetaData.mutableCopy() as! NSMutableDictionary
+                    exifData.modifyExif(dict: newMetaData)
+                    CGImageDestinationAddImageFromSource(destination, imageSource, 0, (newMetaData as CFDictionary))
+                    CGImageDestinationFinalize(destination)
+                    success = FileManager.default.saveFile(data: newData as Data, url: url)
+                }
+            }
+        }
+        return success
     }
     
 }

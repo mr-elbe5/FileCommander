@@ -53,16 +53,16 @@ class ExifDataView: PopoverView{
                 contentView.addSubviewBelow(label, upperView: lastView)
                 lastView = label
             }
-            if exifData.exifLatitude != 0 || exifData.exifLongitude != 0{
-                label = NSTextField(labelWithString: "\("latitude".localize()): \(exifData.exifLatitude)")
+            if let latitude = exifData.exifLatitude, let longitude = exifData.exifLongitude{
+                label = NSTextField(labelWithString: "\("latitude".localize()): \(String(format: "%.5f", latitude))")
                 contentView.addSubviewBelow(label, upperView: lastView)
                 lastView = label
-                label = NSTextField(labelWithString: "\("longitude".localize()): \(exifData.exifLongitude)")
+                label = NSTextField(labelWithString: "\("longitude".localize()): \(String(format: "%.5f", longitude))")
                 contentView.addSubviewBelow(label, upperView: lastView)
                 lastView = label
             }
-            if exifData.exifAltitude != 0{
-                label = NSTextField(labelWithString: "\("altitude".localize()): \(exifData.exifAltitude)")
+            if let altitude = exifData.exifAltitude{
+                label = NSTextField(labelWithString: "\("altitude".localize()): \(Int(altitude))")
                 contentView.addSubviewBelow(label, upperView: lastView)
                 lastView = label
             }

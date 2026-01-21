@@ -12,15 +12,6 @@ import AppKit
 
 class ImageExifData{
     
-    static var exifDateFormatter : DateFormatter{
-        get{
-            let dateFormatter = DateFormatter()
-            dateFormatter.timeZone = .none
-            dateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
-            return dateFormatter
-        }
-    }
-    
     static func getExifData(from url: URL) -> ImageExifData?{
         let exifData = ImageExifData()
         if exifData.load(url: url){
@@ -32,13 +23,13 @@ class ImageExifData{
     var exifLensModel = ""
     var exifWidth : Int = 0
     var exifHeight : Int = 0
-    var exifLatitude: Double = 0.0
-    var exifLongitude: Double = 0.0
-    var exifAltitude: Double = 0.0
+    var exifLatitude: Double? = nil
+    var exifLongitude: Double? = nil
+    var exifAltitude: Double? = nil
     var exifCreationDate : Date? = nil
     
     var hasGPSData: Bool{
-        return exifLatitude != 0.0 || exifLongitude != 0.0
+        return exifLatitude != nil && exifLongitude != nil
     }
     
     func load(url: URL) -> Bool{
@@ -49,7 +40,7 @@ class ImageExifData{
                     exifWidth = exif["PixelXDimension"] as? Int ?? 0
                     exifHeight = exif["PixelYDimension"] as? Int ?? 0
                     if let dateString = exif["DateTimeOriginal"] as? String{
-                        exifCreationDate = ImageExifData.exifDateFormatter.date(from: dateString)
+                        exifCreationDate = DateFormats.exifDateFormatter.date(from: dateString)
                     }
                 }
                 if let gps = dict["{GPS}"] as? NSDictionary{
@@ -61,6 +52,41 @@ class ImageExifData{
             }
         }
         return false
+    }
+    
+    func modifyExif(dict: NSMutableDictionary) {
+        if exifCreationDate != nil{
+            var exifDict: NSMutableDictionary
+            if let  currentExifDict = dict.value(forKey: kCGImagePropertyExifDictionary as String) as? NSMutableDictionary{
+                exifDict = currentExifDict
+            }
+            else{
+                exifDict = NSMutableDictionary()
+                dict[kCGImagePropertyExifDictionary] = exifDict
+            }
+            if let dateTime = exifCreationDate{
+                exifDict[kCGImagePropertyExifDateTimeOriginal] = DateFormats.exifDateFormatter.string(for: dateTime)
+            }
+        }
+        if exifAltitude != nil || exifLatitude != nil || exifLongitude != nil{
+            var gpsDict: NSMutableDictionary
+            if let  currentGpsDict = dict.value(forKey: kCGImagePropertyGPSDictionary as String) as? NSMutableDictionary{
+                gpsDict = currentGpsDict
+            }
+            else{
+                gpsDict = NSMutableDictionary()
+                dict[kCGImagePropertyGPSDictionary] = gpsDict
+            }
+            if exifAltitude != nil {
+                gpsDict[kCGImagePropertyGPSAltitude] = exifAltitude
+            }
+            if exifLatitude != nil {
+                gpsDict[kCGImagePropertyGPSLatitude] = exifLatitude
+            }
+            if exifLongitude != nil{
+                gpsDict[kCGImagePropertyGPSLongitude] = exifLongitude
+            }
+        }
     }
     
 }

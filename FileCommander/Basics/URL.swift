@@ -60,4 +60,26 @@ extension URL{
         return nil
     }
     
+    var creation: Date? {
+        get {
+            return (try? resourceValues(forKeys: [.creationDateKey]))?.creationDate
+        }
+        set {
+            var resourceValues = URLResourceValues()
+            resourceValues.creationDate = newValue
+            try? setResourceValues(resourceValues)
+        }
+    }
+    
+    var modification: Date? {
+        get {
+            return (try? resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+        }
+        set {
+            var resourceValues = URLResourceValues()
+            resourceValues.contentModificationDate = newValue
+            try? setResourceValues(resourceValues)
+        }
+    }
+    
 }

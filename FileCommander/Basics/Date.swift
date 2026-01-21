@@ -11,15 +11,17 @@ import Foundation
 
 extension Date{
     
+    static var utcZone = TimeZone(abbreviation: "UTC")!
+    
     func startOfDay() -> Date{
         var cal = Calendar.current
-        cal.timeZone = TimeZone(abbreviation: "UTC")!
+        cal.timeZone = Self.utcZone
         return cal.startOfDay(for: self)
     }
     
     func startOfMonth() -> Date{
         var cal = Calendar.current
-        cal.timeZone = TimeZone(abbreviation: "UTC")!
+        cal.timeZone = Self.utcZone
         let components = cal .dateComponents([.month, .year], from: self)
         return cal.date(from: components)!
     }
@@ -111,6 +113,13 @@ class DateFormats{
             dateFormatter.dateFormat = "yyyyMMddHHmmss"
             return dateFormatter
         }
+    }
+    
+    static var exifDateFormatter : DateFormatter{
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = Date.utcZone
+        dateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
+        return dateFormatter
     }
     
 }
